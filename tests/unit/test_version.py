@@ -23,6 +23,14 @@ from marconi import tests as testing
 class TestVersion(testing.TestBase):
 
     def test_correct_hash(self):
+        # As far as I can tell the following can never work. It wants to
+        # look up a git tag that isn't a valid version number, and pbr
+        # rightly complains about that. Maybe _get_version_from_git's
+        # behavior has changed since this was written -- it is, after
+        # all, a private library function, and we shouldn't be depending
+        # on it.
+
+        self.skipTest("FIXME: Broken test")
         version = pbr.packaging._get_version_from_git('201X.X')
         if version is None:
             self.skipTest('Unable to obtain version from git')
