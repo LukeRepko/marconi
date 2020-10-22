@@ -52,7 +52,7 @@ class TestMessages(base.FunctionalTestBase):
         result = self.client.post(data=doc)
         self.assertEqual(result.status_code, 201)
 
-        response_headers = set(result.headers.keys())
+        response_headers = set(k.lower() for k in result.headers.keys())
         self.assertIsSubset(self.headers_response_with_body, response_headers)
 
         # GET on posted message
