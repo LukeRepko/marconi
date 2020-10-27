@@ -5,6 +5,23 @@ Marconi's functional tests treat Marconi as a black box. In other
 words, the API calls attempt to simulate an actual user. Unlike unit tests,
 the functional tests do not use mockendpoints.
 
+Configuring the tests
+---------------------
+
+(NOTE: take the following section with salt; it's my best guess of how
+this works)
+
+The tests look in ``$MARCONI_TESTS_CONFIGS_DIR`` for config files. The
+two files that are relevant to the functional tests are
+``functional-tests.conf`` and ``functional-marconi.conf``.
+``functional-tests.conf`` contains the test configuration.
+``functional-marconi.conf`` is a (partial?) mirror of the configuration
+of *the server you are testing against*. In particular, the values in
+the "limits" section must match the target server. They are used to
+check for correct rejection of requests that exceed the limits.
+
+There are example configs in this repository under ``tests/etc``.
+
 
 Running functional tests (With Tox)
 -----------------------------------

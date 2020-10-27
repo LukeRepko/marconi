@@ -63,8 +63,8 @@ class QueueLifecycleBaseTest(base.TestBase):
         self.simulate_put(path, project_id)
         self.assertEqual(self.srmock.status, falcon.HTTP_201)
 
-        location = ('Location', '/v1/queues/gumshoe')
-        self.assertIn(location, self.srmock.headers)
+        location = ('location', '/v1/queues/gumshoe')
+        self.assertIn(location, ((k.lower(), v) for k, v in self.srmock.headers))
 
         # Ensure queue existence
         self.simulate_head(path, project_id)

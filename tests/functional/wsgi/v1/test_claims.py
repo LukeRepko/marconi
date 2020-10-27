@@ -61,7 +61,8 @@ class TestClaims(base.FunctionalTestBase):
         actual_message_count = len(result.json())
         self.assertMessageCount(actual_message_count, message_count)
 
-        response_headers = set(result.headers.keys())
+        response_headers = set(k.lower() for k in result.headers.keys())
+
         self.assertIsSubset(self.headers_response_with_body, response_headers)
 
     test_claim_messages.tags = ['smoke', 'positive']
