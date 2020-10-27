@@ -52,7 +52,7 @@ class TestMessages(base.FunctionalTestBase):
         result = self.client.post(data=doc)
         self.assertEqual(result.status_code, 201)
 
-        response_headers = set(result.headers.keys())
+        response_headers = set(k.lower() for k in result.headers.keys())
         self.assertIsSubset(self.headers_response_with_body, response_headers)
 
         # GET on posted message
@@ -223,19 +223,20 @@ class TestMessages(base.FunctionalTestBase):
 
     test_message_partial_get.tags = ['negative']
 
-    def test_message_bulk_insert_60(self):
+    def test_message_bulk_insert_too_many(self):
         """Insert more than max allowed messages.
 
         Marconi allows  a maximum of 50 message per POST.
         """
-        doc = helpers.create_message_body(messagecount=60)
+        limit = self.limits.message_paging_uplimit
+        doc = helpers.create_message_body(messagecount=limit+1)
 
         result = self.client.post(data=doc)
         self.assertEqual(result.status_code, 400)
 
-    test_message_bulk_insert_60.tags = ['negative']
+    test_message_bulk_insert_too_many.tags = ['negative']
 
-    @ddt.data(10000000000000000000, -100, 0, 30, -10000000000000000000)
+    @ddt.data(10000000000000000000, -100, 0, -10000000000000000000)
     def test_message_get_invalid_limit(self, limit):
         """Get Messages with invalid value for limit.
 
@@ -246,6 +247,16 @@ class TestMessages(base.FunctionalTestBase):
         self.assertEqual(result.status_code, 400)
 
     test_message_get_invalid_limit.tags = ['negative']
+
+    def test_message_get_too_many(self):
+        """ Get more messages than allowed by the (configurable) limit
+
+        The default limit is 20
+        """
+        limit = self.limits.message_paging_uplimit
+        params = {'limit': limit+1}
+        result = self.client.get(params=params)
+        self.assertEqual(result.status_code, 400)
 
     def test_message_bulk_delete_negative(self):
         """Delete more messages than allowed in a single request.
